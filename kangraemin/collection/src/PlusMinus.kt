@@ -1,3 +1,4 @@
+// ref : https://kotlinlang.org/docs/collection-plus-minus.html
 fun main() {
 
 }

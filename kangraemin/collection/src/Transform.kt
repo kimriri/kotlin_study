@@ -1,3 +1,4 @@
+// ref : https://kotlinlang.org/docs/collection-transformations.html
 fun main() {
 
 }
