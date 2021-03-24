@@ -1,3 +1,5 @@
+package dataclass;
+
 public class PojoClass {
     String textData;
     int numberData;

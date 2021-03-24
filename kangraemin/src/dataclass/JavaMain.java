@@ -1,3 +1,5 @@
+package dataclass;
+
 import java.util.HashSet;
 
 public class JavaMain {

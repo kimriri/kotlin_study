@@ -1,3 +1,5 @@
+package dataclass;
+
 import java.util.Objects;
 
 public class PojoClassEqual extends PojoClass {
