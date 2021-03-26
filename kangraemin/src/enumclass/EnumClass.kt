@@ -25,6 +25,7 @@ fun sampleCodeForDefaultMethodInEnum() {
     )
 
     // enum 에서 어떤 값이 분기처리가 되지 않았는지 확인 할 수 있음
+    // 임의의 enum property 에 대한 예외처리를 하지않았을 때 아래의 warning 문구가 표출이 됨
     // 'when' expression on enum is recommended to be exhaustive, add 'PENGUIN' branch or 'else' branch instead
     when (values().random()) {
         DUCK -> {
@@ -143,7 +144,7 @@ enum class AnimalWithInterface: NormalAnimal {
 }
 
 fun sampleCodeForEnumWithNameAndCompanionObject() {
-    println("oldest animal = ${AnimalWithNameAndCompanionObject.getOldestAnimal()}")
+    println("oldest animal = ${AnimalWithNameAndCompanionObject.getOldestAnimalName()}")
 }
 
 enum class AnimalWithNameAndCompanionObject(val cryingSound: String, val age: Int) {
@@ -153,8 +154,9 @@ enum class AnimalWithNameAndCompanionObject(val cryingSound: String, val age: In
     DOG("Bow", 31);
 
     companion object {
-        fun getOldestAnimal(): Int {
-            return values().maxOf { it.age }
+        fun getOldestAnimalName(): String {
+            println(values().toList())
+            return values().maxWithOrNull(compareBy { it.age })?.name ?: "none !"
         }
     }
 }
