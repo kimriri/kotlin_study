@@ -1,6 +1,9 @@
 ## 가시성 변경자 (Visibility Modifiers)    
-class, object, interface, constructor, function, property 과 property 의     
-setter 는 가시성 변경자를 가질 수 있으며, getter 는 항상 property 의 동일한 가시성을 가진다
+class, object, interface, constructor, function, property 는 가시성 변경자를 가질 수 있다,
+
+**property**
+- setter 는 가시성 변경자를 통해 접근 제한을 조정할 수 있으며,    
+- getter 는 경우엔 항상 property 의 동일한 가시성을 가진다
 
 <br>
 
@@ -9,6 +12,13 @@ setter 는 가시성 변경자를 가질 수 있으며, getter 는 항상 proper
 - protected
 - internal
 - public (default)
+
+**internal**
+internal에서의 모듈의 뜻은 한 번에 같이 컴파일되는 코틀린 파일들의 집합 단위를 말한다     
+
+- 인텔리J, eclipse, 메이븐, 그레이들 등 하나의 프로젝트
+- ant 의 task가 실행될 때 함께 컴파일 되는 파일의 집합
+
 
 자바와는 다르게 코틀린에서는 `internal` 이 있으며 자바에는 없는 키워드이다.     
 internal은 모듈을 기준으로 하기 때문에 모듈은 보통 여러 패키지들로 이루어져 있다.    
