@@ -76,9 +76,9 @@ class Points {
 }
 ```
 
+
 단, 익명 오브젝트는 지역(local)변수 또는 private 일 때만 `타입`으로써 사용될 수 있으며,     
-익명 오브젝트를 public함수의 리턴 타입으로 쓰거나 public property 의 타입으로 쓰면 둘의 실제 타입은 익명 객체에서 선언된 상위 타입(supertype)     
-이 되거나 supertype 을 선언하지 않은 경우엔 `Any`타입이 된다.
+익명 오브젝트를 public함수의 리턴 타입으로 쓰거나 public property 의 타입으로 쓰면 둘의 실제 타입은 익명 객체에서 선언된 상위 타입(supertype)이 되거나 supertype 을 선언하지 않은 경우엔 `Any`타입이 된다.
 
 익명 오브젝트를 public function이나 public property로 쓰인 super 타입으로 동작되어 익명 객체 내부에 선언된       
 멤버들에게 접근이 불가능함.
