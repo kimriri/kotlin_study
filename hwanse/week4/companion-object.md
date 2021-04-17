@@ -62,7 +62,7 @@ val ab: Apple = object : Apple(1), Fruit {
 }
 ```
 
-단순한 오브젝트로써 사용한다면 아래와 같이 사용
+단순한 오브젝트로써 사용한다면 아래와 같이 사용(객체 선언과 달리 싱글톤이 아니라 매번 인스턴스를 만듬)
 ```kotlin
 class Points {
     val point = object {
@@ -76,19 +76,21 @@ class Points {
 }
 ```
 
-단, 익명 오브젝트는 private 선언에서만 `타입`으로써 사용될 수 있으며, 익명 오브젝트를 public함수의     
 
-리턴 타입으로 쓰거나 public property 의 타입으로 쓰면 둘의 실제 타입은 익명 객체에서 선언된 상위 타입(supertype)     
-이 되거나 supertype 을 선언하지 않은 경우엔 `Any`타입이 된다.
+단, 익명 오브젝트는 지역(local)변수 또는 private 일 때만 `타입`으로써 사용될 수 있으며,     
+익명 오브젝트를 public함수의 리턴 타입으로 쓰거나 public property 의 타입으로 쓰면 둘의 실제 타입은 익명 객체에서 선언된 상위 타입(supertype)이 되거나 supertype 을 선언하지 않은 경우엔 `Any`타입이 된다.
 
+익명 오브젝트를 public function이나 public property로 쓰인 super 타입으로 동작되어 익명 객체 내부에 선언된       
+멤버들에게 접근이 불가능함.
 ```kotlin
 class C {
+    
     // private 함수: 리턴 타입은 익명 객체의 타입입니다.
     private fun foo() = object {
         val x: String = "x"
     }
 
-    // public 함수: 리턴 타입은 Any입니다.
+    // public 리턴 타입은 Any 입니다.
     fun publicFoo() = object {
         val x: String = "x"
     }
@@ -116,10 +118,10 @@ object expression 과 object declaration 의 의미적 차이
 자바와 C#과는 달리 코틀린에는 static 멤버 변수나 함수가 없다. 코틀린에서 클래스의 인스턴스화 없이 static 처럼      
 클래스 내부에 접근하고 싶다면, `companion` 식별자를 붙이 object 를 선언하여 사용한다.
 
-companion object 를 사용하면 static 멤버들을 호출하던 것 처럼 해당 객체를 사용 가능하다.
-단, 클래스당 한 개만 가질 수 있다.
+companion object 를 사용하면 static 멤버들을 호출하던 것 처럼 해당 객체를 사용 가능하다. 단, 클래스당 한 개만 가질 수 있다.
 
-또한 companion object 의 이름은 생략이 가능하고, 이 경우엔 Companion 라는 식별자로 사용한다.
+또한 companion object 의 이름은 생략이 가능하고(이름을 주는 것 또한 가능), 이 경우엔 Companion 식별자를 이용하여 호출이 가능하며 이 또한 생략이 가능하다.
+자바에서는 코틀린의 companion object 로 만들어진 멤버들은 Companion(이름이 있다면 해당 이름값) 클래스를 통해서만 접근이 가능하다.
 
 ```kotlin
 class MyClass {
@@ -128,16 +130,40 @@ class MyClass {
     }
 }
 
-var my = MyClass.Companion
-
 fun main() {
+    var my = MyClass.Companion.create()
     val instance = MyClass.create()
 }
 ```
 
-companion object 멤버가 static 으로 선언된 변수 처럼 보이긴 하지만 companion object 는 클래스 안에 정의된 일반 객체이다.     
-따라서 companion object 에 이름을 붙이거나 인터페이스를 상속하여 구현하는 행위가 가능하다.      
-단, @JvmStatic 애노테이션과 함께 사용되면 예외다.
+companion object는 자신을 둘러싼 클래스의 모든 private 멤버에 접근이 가능하다. 그래서 바깥쪽 클래스의 private 생성자 호출이 가능하고     
+이를 활용하면 팩토리 패턴을 구현하기 적합하다.
+
+```kotlin
+class User private constructor(val id: String){
+
+    var name: String ?= null
+
+    companion object {
+        fun createUserByEmail(email: String, name: String): User {
+            val user = User(email)
+            user.name = name
+            return user
+        }
+
+        fun createUserByNickname(nickname: String, name: String): User {
+            val user = User(nickname)
+            user.name = name
+            return user
+        }
+    }
+
+}
+```
+
+
+companion object 멤버가 static 으로 선언된 변수 처럼 보이긴 하지만 companion object 는 클래스 안에 정의된 일반 객체이다.      
+인터페이스를 상속하여 구현하는 행위가 가능하다. 단, @JvmStatic 애노테이션과 함께 사용되면 예외다.
 
 ```kotlin
 interface Factory<T> {
@@ -160,8 +186,8 @@ class MyClass {
    
 
 2) 코틀린의 object + @JvmStatic 
-코틀린의 object 키워드를 사용하는 것은 자바에서의 static 이랑 다른 부분이 존재하기 때문에 @JvmStatic 을 조합한다.     
-이 애노테이션은 static 멤버를 컴파일러에게 getter,setter 함수를 자동으로 만들도록 힌트를 주는 역할과 비슷하다.          
+코틀린의 object 키워드를 사용하는 것은 자바에서의 static 이랑 다른 부분이 존재하기 때문에 @JvmStatic 을 조합한다.
+@JvmStatic은 static 멤버를 컴파일러에게 getter,setter 함수를 자동으로 만들도록 힌트를 주는 역할을 수행한다.          
 이 애노테이션이 적용된 멤버들에 경우에는 컴파일러는 선언된 필드와 메소드를 바로 자바의 정적 메소드로 노출되게끔 만든다.     
 (자바와의 상호 운용성과 관련되는 부분)
    
